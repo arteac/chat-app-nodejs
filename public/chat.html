@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: scale(0.9);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-in-out;
+            display: none; /* Initially hidden */
+        }
+
+        #chat-header {
+            background-color: #075E54;
+            color: #fff;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #username-display {
+            font-size: 1.1em;
+            color: #ddd;
+        }
+
+        #messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #e5ddd5;
+            border-top: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .sent, .received {
+            position: relative;
+            margin-left: auto;
+            text-align: right;
+            border-radius: 20px;
+            margin-right: 0;
+            padding: 12px;
+            max-width: 70%;
+            word-wrap: break-word;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: bounce 0.3s ease-in-out;
+            margin-bottom: 15px; /* Bu satır ile mesajlar arasındaki boşluğu artırdık */
+        }
+
+
+        .sent {
+            background-color: #DCF8C6;
+        }
+
+        .received {
+            background-color: #ffffff;
+            margin-left: 0;
+            text-align: left;
+        }
+
+        #chat-input-container {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+        }
+
+        #message-input {
+            flex-grow: 1;
+            padding: 12px 16px;
+            font-size: 1em;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+            background-color: #f4f4f4;
+        }
+
+        #message-input:focus {
+            border-color: #075E54;
+            outline: none;
+            background-color: #fff;
+        }
+
+        #send-btn {
+            background-color: #075E54;
+            color: #fff;
+            padding: 12px 18px;
+            font-size: 1.2em;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        #send-btn:hover {
+            background-color: #128C7E;
+        }
+
+        #file-btn {
+            background-color: #075E54;
+            color: #fff;
+            padding: 10px;
+            font-size: 1.2em;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        #file-btn:hover {
+            background-color: #128C7E;
+        }
+
+        #messages img {
+            max-width: 100%;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        #messages img:hover {
+            transform: scale(1.05);
+        }
+
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        #modal img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        #username-modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        #username-modal div {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+
+        #username-modal input {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            width: 80%;
+            margin-bottom: 15px;
+        }
+
+        #username-modal button {
+            background-color: #075E54;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #username-modal button:hover {
+            background-color: #128C7E;
+        }
+
+        @media (max-width: 600px) {
+            #chat-container {
+                width: 100%;
+                padding: 10px;
+            }
+
+            #send-btn {
+                font-size: 1.5em;
+                padding: 14px;
+            }
+
+            #message-input {
+                font-size: 0.9em;
+                padding: 10px 15px;
+            }
+        }
+
+        #logout-btn {
+            background-color: #d9534f;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        #logout-btn:hover {
+            background-color: #c9302c;
+        }
+        .aciliricon {
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 25px;
+            color: #007bff;
+        }
+
+        .aciliricon:hover {
+            color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Username Modal -->
+    <div id="username-modal">
+        <div>
+            <h3>Enter Your Username</h3>
+            <input type="text" id="username-input" placeholder="Enter your username">
+            <br>
+            <button id="username-submit">Submit</button>
+        </div>
+    </div>
+
+    <!-- Chat Container -->
+    <div id="chat-container">
+        <div id="chat-header">
+            <span>Chat Room</span>
+            <div id="username-display"></div>
+            <button id="logout-btn">Logout</button>
+        </div>
+        <div id="messages"></div>
+        <div id="chat-input-container">
+            <button id="file-btn"><i class="fas fa-paperclip"></i></button>
+            <input type="text" id="message-input" placeholder="Type a message...">
+            <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+            <!-- Call Icons -->
+            <i class="fas fa-video aciliricon" id="video-call-icon" title="Video Call"></i>
+            <i class="fas fa-phone aciliricon" id="voice-call-icon" title="Voice Call"></i>
+        </div>
+    </div>
+
+    <!-- Modal for Image Preview -->
+    <div id="modal">
+        <img src="" alt="Image" id="modal-img">
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let username = '';
+        let peerConnection;
+        let currentCallSession = '';
+
+        const usernameModal = document.getElementById('username-modal');
+        const usernameInput = document.getElementById('username-input');
+        const usernameSubmit = document.getElementById('username-submit');
+        const messagesContainer = document.getElementById('messages');
+        const msgInput = document.getElementById('message-input');
+        const sendMsgBtn = document.getElementById('send-btn');
+        const fileUpload = document.createElement('input');
+        const fileBtn = document.getElementById('file-btn');
+        const chatContainer = document.getElementById('chat-container');
+        const logoutBtn = document.getElementById('logout-btn');
+        const videoCallIcon = document.getElementById('video-call-icon');
+        const voiceCallIcon = document.getElementById('voice-call-icon');
+
+        const servers = {
+            iceServers: [{
+                urls: 'stun:stun.l.google.com:19302'
+            }]
+        };
+
+        fileUpload.type = 'file';
+        fileUpload.style.display = 'none';
+        document.body.appendChild(fileUpload);
+
+        // Submit Username
+        usernameSubmit.addEventListener('click', () => {
+            username = usernameInput.value.trim();
+            if (username) {
+                document.getElementById('username-display').textContent = username;
+                usernameModal.style.display = 'none';
+                chatContainer.style.display = 'flex';
+            }
+        });
+
+        // Send message
+        sendMsgBtn.addEventListener('click', () => {
+            const message = msgInput.value;
+            if (message && username) {
+                const time = new Date().toLocaleTimeString();
+                const messageWithTime = `${message} <span style="font-size: 0.8em; color: #888;">(${time})</span>`;
+                socket.emit('chat message', { username, message: messageWithTime });
+                msgInput.value = '';
+            }
+        });
+
+        // File Upload
+        fileBtn.addEventListener('click', () => {
+            fileUpload.click();
+        });
+
+        fileUpload.addEventListener('change', () => {
+            const file = fileUpload.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          socket.emit('chat message', {
+                              username,
+                              message: `<img src="${data.fileUrl}" alt="Uploaded file" style="max-width: 100%; height: auto;" />`
+                          });
+                      } else {
+                          alert('File upload failed');
+                      }
+                  })
+                  .catch(err => alert('Error uploading file: ' + err));
+            }
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            username = '';
+            document.getElementById('username-display').textContent = '';
+            chatContainer.style.display = 'none';
+            usernameModal.style.display = 'flex';
+        });
+
+        // Display chat message
+        socket.on('chat message', (msg) => {
+            const msgElement = document.createElement('div');
+            msgElement.classList.add(msg.username === username ? 'sent' : 'received');
+            msgElement.innerHTML = msg.message;
+            messagesContainer.appendChild(msgElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+
+        // WebRTC handling for video and voice calls
+        socket.on('offer', (offer) => {
+            peerConnection = new RTCPeerConnection(servers);
+            peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            peerConnection.createAnswer().then(answer => {
+                peerConnection.setLocalDescription(answer);
+                socket.emit('answer', answer, currentCallSession);
+            });
+
+            peerConnection.onicecandidate = event => {
+                if (event.candidate) {
+                    socket.emit('ice-candidate', event.candidate, currentCallSession);
+                }
+            };
+
+            peerConnection.ontrack = (event) => {
+                const remoteStream = event.streams[0];
+                const video = document.createElement('video');
+                video.srcObject = remoteStream;
+                video.autoplay = true;
+                document.body.appendChild(video);
+            };
+        });
+
+        // Handle answering call
+        socket.on('answer', (answer, sessionId) => {
+            if (sessionId === currentCallSession) {
+                peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+            }
+        });
+
+        // ICE Candidate handling
+        socket.on('ice-candidate', (candidate, sessionId) => {
+            if (sessionId === currentCallSession) {
+                peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+            }
+        });
+
+        // Video and Voice Call Request
+        videoCallIcon.addEventListener('click', () => {
+            const session = prompt("Görüntülü Görüşme için session adını giriniz: ");
+            if (session) {
+                currentCallSession = session;
+                initiateCall('video');
+            }
+        });
+
+        voiceCallIcon.addEventListener('click', () => {
+            const session = prompt("Sesli Görüşme için Session Adını Giriniz: ");
+            if (session) {
+                currentCallSession = session;
+                initiateCall('voice');
+            }
+        });
+
+        // Call initiation
+        function initiateCall(type) {
+            peerConnection = new RTCPeerConnection(servers);
+
+            navigator.mediaDevices.getUserMedia({ video: type === 'video', audio: true }).then(stream => {
+                const localVideo = document.createElement('video');
+                localVideo.srcObject = stream;
+                localVideo.autoplay = true;
+                document.body.appendChild(localVideo);
+
+                stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+
+                peerConnection.createOffer().then(offer => {
+                    peerConnection.setLocalDescription(offer);
+                    socket.emit('offer', offer, currentCallSession);
+                });
+            }).catch(error => {
+                alert('Error accessing media devices: ' + error);
+            });
+
+            peerConnection.onicecandidate = event => {
+                if (event.candidate) {
+                    socket.emit('ice-candidate', event.candidate, currentCallSession);
+                }
+            };
+        }
+
+        // Handle connection
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+
+        socket.on('disconnect', () => {
+            if (peerConnection) {
+                peerConnection.close();
+            }
+        });
+    </script>
+</body>
+</html>
