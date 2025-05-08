@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-time Chat App</title>
+    <title>Gerçek Zamanlı Sohbet Uygulaması</title>
     <style>
-        /* General Reset */
+        /* Genel Sıfırlama */
         * {
             margin: 0;
             padding: 0;
@@ -18,7 +18,7 @@
             background-color: #e5ddd5;
         }
 
-        /* Login Page Styling */
+        /* Giriş Sayfası Stil */
         .login-container {
             display: flex;
             justify-content: center;
@@ -70,7 +70,7 @@
             background-color: #075e54;
         }
 
-        /* Chat Page Styling */
+        /* Sohbet Sayfası Stil */
         #chat-container {
             display: none;
             flex-direction: column;
@@ -139,7 +139,7 @@
             background-color: #075e54;
         }
 
-        /* Video Call Page */
+        /* Video Görüşme Sayfası */
         #video-call-container {
             display: none;
             text-align: center;
@@ -167,7 +167,7 @@
             background-color: #c9302c;
         }
 
-        /* Responsive Design */
+        /* Duyarlı Tasarım */
         @media (max-width: 600px) {
             #chat-container {
                 width: 100%;
@@ -185,36 +185,36 @@
     </style>
 </head>
 <body>
-    <!-- Login Section -->
+    <!-- Giriş Bölümü -->
     <div class="login-container">
-        <h2>Login</h2>
+        <h2>Giriş Yap</h2>
         <form id="login-form">
-            <label for="username">Session Name (Username):</label>
+            <label for="username">Oturum Adı (Kullanıcı Adı):</label>
             <input type="text" id="username" name="username" required>
 
-            <label for="password">Password:</label>
+            <label for="password">Parola:</label>
             <input type="password" id="password" name="password" required>
 
-            <button type="submit">Login</button>
+            <button type="submit">Giriş Yap</button>
         </form>
     </div>
 
-    <!-- Chat Section -->
+    <!-- Sohbet Bölümü -->
     <div id="chat-container">
         <div id="messages"></div>
         <div id="chat-input-container">
-            <input type="text" id="message-input" placeholder="Type a message...">
-            <button id="send-btn">Send</button>
+            <input type="text" id="message-input" placeholder="Bir mesaj yaz...">
+            <button id="send-btn">Gönder</button>
         </div>
         <input type="file" id="file-input">
-        <button id="start-call-btn">Start Call</button>
+        <button id="start-call-btn">Görüşme Başlat</button>
     </div>
 
-    <!-- Video Call Section -->
+    <!-- Video Görüşme Bölümü -->
     <div id="video-call-container">
         <video id="local-video" autoplay muted></video>
         <video id="remote-video" autoplay></video>
-        <button id="end-call-btn">End Call</button>
+        <button id="end-call-btn">Görüşmeyi Sonlandır</button>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>

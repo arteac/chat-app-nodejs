@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>Sohbet</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Genel Sıfırlama */
         * {
             margin: 0;
             padding: 0;
@@ -19,6 +20,7 @@
             color: #333;
         }
 
+        /* Solma Animasyonu */
         @keyframes fadeIn {
             0% {
                 opacity: 0;
@@ -28,6 +30,7 @@
             }
         }
 
+        /* Zıplama Animasyonu */
         @keyframes bounce {
             0% {
                 transform: scale(0.9);
@@ -40,6 +43,7 @@
             }
         }
 
+        /* Sohbet Konteyneri */
         #chat-container {
             display: flex;
             flex-direction: column;
@@ -52,9 +56,10 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             animation: fadeIn 0.6s ease-in-out;
-            display: none; /* Initially hidden */
+            display: none; /* Başlangıçta gizli */
         }
 
+        /* Sohbet Başlığı */
         #chat-header {
             background-color: #075E54;
             color: #fff;
@@ -73,6 +78,7 @@
             color: #ddd;
         }
 
+        /* Mesajlar Alanı */
         #messages {
             flex-grow: 1;
             padding: 20px;
@@ -85,6 +91,7 @@
             position: relative;
         }
 
+        /* Gönderilen ve Alınan Mesajlar */
         .sent, .received {
             position: relative;
             margin-left: auto;
@@ -96,9 +103,8 @@
             word-wrap: break-word;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             animation: bounce 0.3s ease-in-out;
-            margin-bottom: 15px; /* Bu satır ile mesajlar arasındaki boşluğu artırdık */
+            margin-bottom: 15px; /* Mesajlar arasındaki boşluğu artırdık */
         }
-
 
         .sent {
             background-color: #DCF8C6;
@@ -110,6 +116,7 @@
             text-align: left;
         }
 
+        /* Mesaj Giriş Alanı */
         #chat-input-container {
             display: flex;
             align-items: center;
@@ -173,6 +180,7 @@
             transform: scale(1.05);
         }
 
+        /* Modal Penceresi */
         #modal {
             display: none;
             position: fixed;
@@ -190,6 +198,7 @@
             max-height: 90%;
         }
 
+        /* Kullanıcı Adı Modal Penceresi */
         #username-modal {
             display: flex;
             justify-content: center;
@@ -230,6 +239,7 @@
             background-color: #128C7E;
         }
 
+        /* Duyarlı Tasarım */
         @media (max-width: 600px) {
             #chat-container {
                 width: 100%;
@@ -260,6 +270,7 @@
         #logout-btn:hover {
             background-color: #c9302c;
         }
+
         .aciliricon {
             cursor: pointer;
             margin-left: 10px;
@@ -270,42 +281,41 @@
         .aciliricon:hover {
             color: #0056b3;
         }
-
     </style>
 </head>
 <body>
 
-    <!-- Username Modal -->
+    <!-- Kullanıcı Adı Modal Penceresi -->
     <div id="username-modal">
         <div>
-            <h3>Enter Your Username</h3>
-            <input type="text" id="username-input" placeholder="Enter your username">
+            <h3>Kullanıcı Adınızı Girin</h3>
+            <input type="text" id="username-input" placeholder="Kullanıcı adınızı girin">
             <br>
-            <button id="username-submit">Submit</button>
+            <button id="username-submit">Gönder</button>
         </div>
     </div>
 
-    <!-- Chat Container -->
+    <!-- Sohbet Konteyneri -->
     <div id="chat-container">
         <div id="chat-header">
-            <span>Chat Room</span>
+            <span>Sohbet Odası</span>
             <div id="username-display"></div>
-            <button id="logout-btn">Logout</button>
+            <button id="logout-btn">Çıkış Yap</button>
         </div>
         <div id="messages"></div>
         <div id="chat-input-container">
             <button id="file-btn"><i class="fas fa-paperclip"></i></button>
-            <input type="text" id="message-input" placeholder="Type a message...">
+            <input type="text" id="message-input" placeholder="Bir mesaj yaz...">
             <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
-            <!-- Call Icons -->
-            <i class="fas fa-video aciliricon" id="video-call-icon" title="Video Call"></i>
-            <i class="fas fa-phone aciliricon" id="voice-call-icon" title="Voice Call"></i>
+            <!-- Görüşme İkonları -->
+            <i class="fas fa-video aciliricon" id="video-call-icon" title="Görüntülü Görüşme"></i>
+            <i class="fas fa-phone aciliricon" id="voice-call-icon" title="Sesli Görüşme"></i>
         </div>
     </div>
 
-    <!-- Modal for Image Preview -->
+    <!-- Resim Önizleme için Modal -->
     <div id="modal">
-        <img src="" alt="Image" id="modal-img">
+        <img src="" alt="Resim" id="modal-img">
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -338,7 +348,7 @@
         fileUpload.style.display = 'none';
         document.body.appendChild(fileUpload);
 
-        // Submit Username
+        // Kullanıcı Adı Gönderme
         usernameSubmit.addEventListener('click', () => {
             username = usernameInput.value.trim();
             if (username) {
@@ -348,7 +358,7 @@
             }
         });
 
-        // Send message
+        // Mesaj Gönderme
         sendMsgBtn.addEventListener('click', () => {
             const message = msgInput.value;
             if (message && username) {
@@ -359,7 +369,7 @@
             }
         });
 
-        // File Upload
+        // Dosya Yükleme
         fileBtn.addEventListener('click', () => {
             fileUpload.click();
         });
@@ -377,17 +387,17 @@
                       if (data.success) {
                           socket.emit('chat message', {
                               username,
-                              message: `<img src="${data.fileUrl}" alt="Uploaded file" style="max-width: 100%; height: auto;" />`
+                              message: `<img src="${data.fileUrl}" alt="Yüklenen dosya" style="max-width: 100%; height: auto;" />`
                           });
                       } else {
-                          alert('File upload failed');
+                          alert('Dosya yükleme başarısız');
                       }
                   })
-                  .catch(err => alert('Error uploading file: ' + err));
+                  .catch(err => alert('Dosya yükleme hatası: ' + err));
             }
         });
 
-        // Logout
+        // Çıkış Yapma
         logoutBtn.addEventListener('click', () => {
             username = '';
             document.getElementById('username-display').textContent = '';
@@ -395,7 +405,7 @@
             usernameModal.style.display = 'flex';
         });
 
-        // Display chat message
+        // Sohbet Mesajını Görüntüleme
         socket.on('chat message', (msg) => {
             const msgElement = document.createElement('div');
             msgElement.classList.add(msg.username === username ? 'sent' : 'received');
@@ -404,7 +414,7 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         });
 
-        // WebRTC handling for video and voice calls
+        // WebRTC ile Görüntülü ve Sesli Görüşme Yönetimi
         socket.on('offer', (offer) => {
             peerConnection = new RTCPeerConnection(servers);
             peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
@@ -428,23 +438,23 @@
             };
         });
 
-        // Handle answering call
+        // Görüşme Yanıtını İşleme
         socket.on('answer', (answer, sessionId) => {
             if (sessionId === currentCallSession) {
                 peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
             }
         });
 
-        // ICE Candidate handling
+        // ICE Adayını İşleme
         socket.on('ice-candidate', (candidate, sessionId) => {
             if (sessionId === currentCallSession) {
                 peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
             }
         });
 
-        // Video and Voice Call Request
+        // Görüntülü ve Sesli Görüşme Talebi
         videoCallIcon.addEventListener('click', () => {
-            const session = prompt("Görüntülü Görüşme için session adını giriniz: ");
+            const session = prompt("Görüntülü Görüşme için oturum adını giriniz: ");
             if (session) {
                 currentCallSession = session;
                 initiateCall('video');
@@ -452,14 +462,14 @@
         });
 
         voiceCallIcon.addEventListener('click', () => {
-            const session = prompt("Sesli Görüşme için Session Adını Giriniz: ");
+            const session = prompt("Sesli Görüşme için oturum adını giriniz: ");
             if (session) {
                 currentCallSession = session;
                 initiateCall('voice');
             }
         });
 
-        // Call initiation
+        // Görüşme Başlatma
         function initiateCall(type) {
             peerConnection = new RTCPeerConnection(servers);
 
@@ -476,7 +486,7 @@
                     socket.emit('offer', offer, currentCallSession);
                 });
             }).catch(error => {
-                alert('Error accessing media devices: ' + error);
+                alert('Medya cihazlarına erişim hatası: ' + error);
             });
 
             peerConnection.onicecandidate = event => {
@@ -486,9 +496,9 @@
             };
         }
 
-        // Handle connection
+        // Bağlantı Yönetimi
         socket.on('connect', () => {
-            console.log('Connected to server');
+            console.log('Sunucuya bağlanıldı');
         });
 
         socket.on('disconnect', () => {
